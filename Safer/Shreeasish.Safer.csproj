@@ -80,9 +80,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <ProjectReference Include="X:\C# Samples\Background sensors for Windows Phone 8.1 sample\C#\BackgroundTask\SaferBackGroundTasks.csproj">
+    <ProjectReference Include="X:\C# Samples\Background sensors for Windows Phone 8.1 sample\C#\BackgroundTask\BackGroundTasks.csproj">
       <Project>{8fd2e412-a2f2-4325-a230-f7f6efe81652}</Project>
-      <Name>SaferBackGroundTasks</Name>
+      <Name>BackGroundTasks</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +93,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaferConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

@@ -9,6 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <AppBarToggleButton HorizontalAlignment="Left" Icon="Accept"  Margin="158,268,0,0" VerticalAlignment="Top" Click="AppBarToggleButton_Click"/>
 
     </Grid>
 </Page>

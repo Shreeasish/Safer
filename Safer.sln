@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shreeasish.Safer", "Safer\Shreeasish.Safer.csproj", "{B3E7A7C9-F74F-4B13-B14B-457285473113}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaferBackGroundTasks", "X:\C# Samples\Background sensors for Windows Phone 8.1 sample\C#\BackgroundTask\SaferBackGroundTasks.csproj", "{8FD2E412-A2F2-4325-A230-F7F6EFE81652}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackGroundTasks", "X:\C# Samples\Background sensors for Windows Phone 8.1 sample\C#\BackgroundTask\BackGroundTasks.csproj", "{8FD2E412-A2F2-4325-A230-F7F6EFE81652}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
