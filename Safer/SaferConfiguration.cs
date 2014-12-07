@@ -8,9 +8,9 @@ namespace Shreeasish.Safer
 {
     class SaferConfiguration
     {
-        private static const string AccelerometerTaskName = "AccelerometerTask";
+        private static string AccelerometerTaskName = "AccelerometerTask";
        
-        private static const string AccelerometerTaskEntryPoint = "SaferBackGroundTasks.AccelerometerTask";
+        private static string AccelerometerTaskEntryPoint = "SaferBackGroundTasks.AccelerometerTask";
         /// <summary>
         ///Returns the Accelerometer Task Name
         /// </summary>
@@ -28,6 +28,8 @@ namespace Shreeasish.Safer
             return AccelerometerTaskEntryPoint;
         }
 	
+
+
 
     }
 }

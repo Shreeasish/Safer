@@ -17,28 +17,16 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Safer.App">
       <m3:VisualElements DisplayName="Safer" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="Safer" ForegroundText="light" BackgroundColor="transparent" ToastCapable="true">
-        <m3:LockScreen Notification="badge" BadgeLogo="" />
         <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
         </m3:DefaultTile>
         <m3:SplashScreen Image="Assets\SplashScreen.png" />
       </m3:VisualElements>
       <Extensions>
-        <Extension Category="windows.backgroundTasks">
+        <Extension Category="windows.backgroundTasks" EntryPoint="SaferBackGroundTasks.AccelerometerTask">
           <BackgroundTasks>
             <m2:Task Type="deviceUse" />
           </BackgroundTasks>
         </Extension>
-        <Extension Category="windows.backgroundTasks">
-          <BackgroundTasks>
-            <m2:Task Type="location" />
-          </BackgroundTasks>
-        </Extension>
-        <Extension Category="windows.backgroundTasks">
-          <BackgroundTasks>
-            <Task Type="pushNotification" />
-          </BackgroundTasks>
-        </Extension>
-        <m3:Extension Category="windows.updateTask" />
       </Extensions>
     </Application>
   </Applications>
