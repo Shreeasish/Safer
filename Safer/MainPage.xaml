@@ -12,6 +12,8 @@
         <Button Content="Enable" HorizontalAlignment="Left" Margin="190,222,0,0" VerticalAlignment="Top" Click="Start_Click"/>
         <Button Content="Register" HorizontalAlignment="Left" Margin="40,222,0,0" VerticalAlignment="Top" Click="Register_Click"/>
         <TextBlock HorizontalAlignment="Left" FontSize="20" Margin="93,417,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="72" Width="220" Name="count"/>
+        <Button Content="GRegister" HorizontalAlignment="Left" Margin="190,345,0,0" VerticalAlignment="Top" Click="GRegister_Click"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="130,122,0,0" VerticalAlignment="Top" Click="Button_Click"/>
 
 
     </Grid>

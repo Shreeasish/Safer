@@ -24,6 +24,7 @@
       <Extensions>
         <Extension Category="windows.backgroundTasks" EntryPoint="SaferBackGroundTasks.AccelerometerTask">
           <BackgroundTasks>
+            <m2:Task Type="location" />
             <m2:Task Type="deviceUse" />
           </BackgroundTasks>
         </Extension>

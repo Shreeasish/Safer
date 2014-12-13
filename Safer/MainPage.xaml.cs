@@ -17,6 +17,8 @@ using Windows.Devices.Sensors;
 using Windows.UI.Core;
 using Windows.Storage;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation.Geofencing;
+using Windows.Devices.Geolocation;
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
 namespace Shreeasish.Safer
@@ -26,20 +28,26 @@ namespace Shreeasish.Safer
     /// </summary>
     public sealed partial class MainPage : Page
     {
-    #region registration objects created
+    #region objects created
         private Accelerometer _acclerometer;
 
         bool Registered = false;
 
+        public string Status { get; set; }
+
         bool BackGroundTaskIsActive = false;
 
-        private DeviceUseTrigger accelerometerTrigger;
+        private DeviceUseTrigger manualTrigger;
+
+        private LocationTrigger geofenceTrigger;
 
         private string Error;
 
         public bool BackgroundRequestGranted= false;
 
-        private BackgroundTaskRegistration saferAccelerometerRegistration;
+        private BackgroundTaskRegistration saferAccelerometerRegistrationManual;
+
+        private BackgroundTaskRegistration saferAccelerometerRegistrationGeofence;
         #endregion
 
 
@@ -70,6 +78,8 @@ namespace Shreeasish.Safer
         {
             if (ApplicationData.Current.LocalSettings.Values.ContainsKey("SampleCount"))
                 count.Text = ApplicationData.Current.LocalSettings.Values["SampleCount"].ToString();
+            else
+                count.Text = "Task is inactive";
         }//Constructor End
 
 
@@ -82,7 +92,7 @@ namespace Shreeasish.Safer
             if (_acclerometer != null)
             {
 
-                accelerometerTrigger = new DeviceUseTrigger();
+                manualTrigger = new DeviceUseTrigger();
 
                 BackgroundAccessStatus accessStatus = await BackgroundExecutionManager.RequestAccessAsync();
 
@@ -141,13 +151,13 @@ namespace Shreeasish.Safer
             };
 
             //Trigger set
-            accelerometerTaskBuilder.SetTrigger(accelerometerTrigger);
+            accelerometerTaskBuilder.SetTrigger(manualTrigger);
 
             //Task registered
-            saferAccelerometerRegistration = accelerometerTaskBuilder.Register();
+            saferAccelerometerRegistrationManual = accelerometerTaskBuilder.Register();
 
             //background task completion event handler
-            saferAccelerometerRegistration.Completed += new BackgroundTaskCompletedEventHandler(OnBackgroundTaskCompleted);
+            saferAccelerometerRegistrationManual.Completed += new BackgroundTaskCompletedEventHandler(OnBackgroundTaskCompleted);
 
             return Registered = true;
         }
@@ -174,10 +184,12 @@ namespace Shreeasish.Safer
                         Error = "Exception" + ex.Message;
                     }
 
-                    if (null != saferAccelerometerRegistration)
+#warning unregisters the background task
+
+                    if (null != saferAccelerometerRegistrationManual)
                     {
-                        saferAccelerometerRegistration.Unregister(false);
-                        saferAccelerometerRegistration = null;
+                        saferAccelerometerRegistrationManual.Unregister(false);
+                        saferAccelerometerRegistrationManual = null;
                     }
 
                 });
@@ -218,11 +230,7 @@ namespace Shreeasish.Safer
 
         }
 
-        private async void AppBarToggleButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-          
-        }
+        #region Start Accelerometer Function
 
         private async Task<bool> StartAccelerometerBackGroundTask(String deviceId)
         {
@@ -231,7 +239,7 @@ namespace Shreeasish.Safer
             try
             {
                 // Request a DeviceUse task to use the accelerometer.
-                DeviceTriggerResult accelerometerTriggerResult = await accelerometerTrigger.RequestAsync(deviceId);
+                DeviceTriggerResult accelerometerTriggerResult = await manualTrigger.RequestAsync(deviceId);
 
 #warning background task seems to be run from here
 
@@ -267,12 +275,12 @@ namespace Shreeasish.Safer
             return started;
         }
 
+        #endregion
 
 
 
 
-
-        public string Status { get; set; }
+        
 
 
         private void Register_Click(object sender, RoutedEventArgs e)
@@ -285,6 +293,134 @@ namespace Shreeasish.Safer
             BackGroundTaskIsActive = await StartAccelerometerBackGroundTask(_acclerometer.DeviceId);
 
         }
+
+
+
+
+
+
+
+        private async void GRegister_Click(object sender, RoutedEventArgs e)
+        {
+            
+            
+
+         // Get permission for a background task from the user. If the user has already answered once,
+         //this does nothing and the user must manually update their preference via PC Settings.
+         BackgroundAccessStatus backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
+        
+         // Regardless of the answer, register the background task. If the user later adds this application
+         // to the lock screen, the background task will be ready to run.
+         // Create a new background task builder
+         BackgroundTaskBuilder geofenceTaskBuilder = new BackgroundTaskBuilder();
+    
+          geofenceTaskBuilder.Name = SaferConfiguration.GetTaskName();
+          geofenceTaskBuilder.TaskEntryPoint = SaferConfiguration.GetTaskEntryPoint();
+
+          // Create a new location trigger
+           var trigger = new LocationTrigger(LocationTriggerType.Geofence);
+
+           // Associate the locationi trigger with the background task builder
+           geofenceTaskBuilder.SetTrigger(trigger);
+
+        // If it is important that there is user presence and/or
+        // internet connection when OnCompleted is called
+        // the following could be called before calling Register()
+        // SystemCondition condition = new SystemCondition(SystemConditionType.UserPresent | SystemConditionType.InternetAvailable);
+        // geofenceTaskBuilder.AddCondition(condition);
+
+        // Register the background task
+           saferAccelerometerRegistrationGeofence = geofenceTaskBuilder.Register();
+
+        // Associate an event handler with the new background task
+           saferAccelerometerRegistrationGeofence.Completed += new BackgroundTaskCompletedEventHandler(OnBackgroundTaskCompleted);
+
+        switch (backgroundAccessStatus)
+        {
+        case BackgroundAccessStatus.Unspecified:
+        case BackgroundAccessStatus.Denied:
+            Error = "This application must be added to the lock screen before the background task will run.";
+            break;
+
+        }
+
+
+        }
+
+
+        
+
+ 
+
+           
+        
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            CreateGeofence();
+        }
+
+
+        
+        public async void CreateGeofence()
+        {
+            Geofence geofence = null;
+
+            string fenceKey = "My Geofence";
+
+            Geolocator MyGeolocator = new Geolocator();
+            
+            Geoposition MyGeoposition = await MyGeolocator.GetGeopositionAsync();
+
+
+
+            BasicGeoposition position;
+            position.Latitude = Double.Parse(MyGeoposition.Coordinate.Latitude.ToString());
+            position.Longitude = Double.Parse(MyGeoposition.Coordinate.Longitude.ToString());
+            position.Altitude = 0.0;
+            double radius = 100;
+
+            // the geofence is a circular region
+            Geocircle geocircle = new Geocircle(position, radius);
+
+            bool singleUse=false;
+
+            // want to listen for enter geofence, exit geofence and remove geofence events
+            // you can select a subset of these event states
+            MonitoredGeofenceStates mask = 0;
+
+            mask |= MonitoredGeofenceStates.Entered;
+            mask |= MonitoredGeofenceStates.Exited;
+
+            // setting up how long you need to be in geofence for enter event to fire
+            TimeSpan dwellTime;
+
+
+            dwellTime = new TimeSpan(0, 0, 30);//(ParseTimeSpan("0", defaultDwellTimeSeconds));
+  
+            // setting up how long the geofence should be active
+            TimeSpan duration;
+
+            duration = new TimeSpan(2,0,0,0);
+
+
+            // setting up the start time of the geofence
+            DateTimeOffset startTime;
+
+            startTime = DateTime.Today;
+
+
+            geofence = new Geofence(fenceKey, geocircle, mask, singleUse, dwellTime, startTime, duration);
+           
+                GeofenceMonitor.Current.Geofences.Add(geofence);
+           
+           
+
+        }
+
+
+
+
 
 
 

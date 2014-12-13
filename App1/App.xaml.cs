@@ -7,7 +7,6 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,18 +18,13 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace Shreeasish.Safer
+namespace App1
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     public sealed partial class App : Application
     {
-
-        
-        
-
-
         private TransitionCollection transitions;
 
         /// <summary>
@@ -56,8 +50,6 @@ namespace Shreeasish.Safer
             {
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
-
-            
 #endif
 
             Frame rootFrame = Window.Current.Content as Frame;
