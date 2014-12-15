@@ -33,6 +33,8 @@ namespace Shreeasish.Safer
 
         bool Registered = false;
 
+        int geofencecount =0;
+
         public string Status { get; set; }
 
         bool BackGroundTaskIsActive = false;
@@ -364,9 +366,14 @@ namespace Shreeasish.Safer
         
         public async void CreateGeofence()
         {
+
+            geofencecount++;
+
             Geofence geofence = null;
 
-            string fenceKey = "My Geofence";
+
+
+            string fenceKey = "Safer" + geofencecount.ToString();
 
             Geolocator MyGeolocator = new Geolocator();
             
@@ -378,7 +385,7 @@ namespace Shreeasish.Safer
             position.Latitude = Double.Parse(MyGeoposition.Coordinate.Latitude.ToString());
             position.Longitude = Double.Parse(MyGeoposition.Coordinate.Longitude.ToString());
             position.Altitude = 0.0;
-            double radius = 100;
+            double radius = 10;
 
             // the geofence is a circular region
             Geocircle geocircle = new Geocircle(position, radius);
@@ -396,7 +403,7 @@ namespace Shreeasish.Safer
             TimeSpan dwellTime;
 
 
-            dwellTime = new TimeSpan(0, 0, 30);//(ParseTimeSpan("0", defaultDwellTimeSeconds));
+            dwellTime = new TimeSpan(0, 0, 10);//(ParseTimeSpan("0", defaultDwellTimeSeconds));
   
             // setting up how long the geofence should be active
             TimeSpan duration;
@@ -412,7 +419,7 @@ namespace Shreeasish.Safer
 
             geofence = new Geofence(fenceKey, geocircle, mask, singleUse, dwellTime, startTime, duration);
            
-                GeofenceMonitor.Current.Geofences.Add(geofence);
+            GeofenceMonitor.Current.Geofences.Add(geofence);
            
            
 
